@@ -20,4 +20,4 @@ but ensuring that at least `<interval>` millseconds elapse between each request.
 
 Suppose you want to access a particular API at most once per second:
 
-    http-api-proxy http://example.com/api --interval=1000
+    http-api-proxy example.com --interval=1000
