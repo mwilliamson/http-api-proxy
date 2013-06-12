@@ -1,0 +1,21 @@
+{
+    "name": "http-api-proxy",
+    "version": "0.1.0",
+    "dependencies": {
+        "http-proxy": "~0.10.2",
+        "rate-limit": "~0.1.0",
+        "optimist": "~0.5.2"
+    },
+    "bin": {
+        "http-api-proxy": "bin/http-api-proxy"
+    },
+    "keywords": [
+        "http",
+        "api",
+        "proxy",
+        "reverse",
+        "rate",
+        "limit"
+    ],
+    "main": "./lib/index.js"
+}
