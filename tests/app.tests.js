@@ -3,10 +3,29 @@ var request = require("request");
 var apiProxy = require("../");
 var httpEcho = require("./http-echo");
 
-var echoPort = 50999;
-var proxyPort = 50998;
-
 exports["requests are rate limited"] = function(test) {
+    var server = startApiProxy();
+    
+    function timeRequest(callback) {
+        request(server.url("/"), function(error, response, body) {
+            callback(error, JSON.parse(body).time);
+        });
+    }
+    
+    timeRequest(function(error, firstTime) {
+        test.ifError(error);
+        timeRequest(function(error, secondTime) {
+            test.ifError(error);
+            test.ok(secondTime - firstTime >= 100, "gap was: " + (secondTime - firstTime));
+            server.stop();
+            test.done();     
+        });
+    });
+};
+
+function startApiProxy() {
+    var echoPort = 50999;
+    var proxyPort = 50998;
     var httpEchoServer = httpEcho.createServer().listen(echoPort);
     
     var apiProxyServer = apiProxy.app.run([
@@ -15,18 +34,15 @@ exports["requests are rate limited"] = function(test) {
         "--port=" + proxyPort
     ]);
     
-    function timeRequest(callback) {
-        request("http://localhost:" + proxyPort, function(error, response, body) {
-            callback(JSON.parse(body).time);
-        });
+    function stop() {
+        httpEchoServer.close();
+        apiProxyServer.close();
     }
     
-    timeRequest(function(firstTime) {
-        timeRequest(function(secondTime) {
-            test.ok(secondTime - firstTime >= 100);
-            httpEchoServer.close();
-            apiProxyServer.close();
-            test.done();     
-        });
-    });
-};
+    return {
+        stop: stop,
+        url: function(path) {
+            return "http://localhost:" + proxyPort + path;
+        }
+    };
+}
