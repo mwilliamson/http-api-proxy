@@ -6,8 +6,15 @@
         "rate-limit": "~0.1.0",
         "optimist": "~0.5.2"
     },
+    "devDependencies": {
+        "nodeunit": "~0.8.0",
+        "request": "~2.21"
+    },
     "bin": {
         "http-api-proxy": "bin/http-api-proxy"
+    },
+    "scripts": {
+        "test": "nodeunit tests/*.tests.js"
     },
     "keywords": [
         "http",
