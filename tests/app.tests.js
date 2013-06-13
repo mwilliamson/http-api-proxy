@@ -6,15 +6,9 @@ var httpEcho = require("./http-echo");
 exports["requests are rate limited"] = function(test) {
     var server = startApiProxy();
     
-    function timeRequest(callback) {
-        request(server.url("/"), function(error, response, body) {
-            callback(error, JSON.parse(body).time);
-        });
-    }
-    
-    timeRequest(function(error, firstTime) {
+    server.timeRequest("/", function(error, firstTime) {
         test.ifError(error);
-        timeRequest(function(error, secondTime) {
+        server.timeRequest("/", function(error, secondTime) {
             test.ifError(error);
             test.ok(secondTime - firstTime >= 100, "gap was: " + (secondTime - firstTime));
             server.stop();
@@ -39,10 +33,22 @@ function startApiProxy() {
         apiProxyServer.close();
     }
     
+    function timeRequest(path, options, callback) {
+        if (!callback) {
+            callback = options;
+            options = {}
+        }
+        request(url(path), options, function(error, response, body) {
+            callback(error, JSON.parse(body).time);
+        });
+    }
+    
+    function url(path) {
+        return "http://localhost:" + proxyPort + path;
+    }
+    
     return {
         stop: stop,
-        url: function(path) {
-            return "http://localhost:" + proxyPort + path;
-        }
+        timeRequest: timeRequest
     };
 }
