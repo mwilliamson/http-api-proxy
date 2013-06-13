@@ -2,33 +2,4 @@
 
 var apiProxy = require("../");
 
-var argv = require('optimist')
-    .usage("http-api-proxy <hostname>[:<port>] --interval=<interval> --port=<port>")
-    .demand(1)
-    .demand("interval")
-    .demand("port")
-    .argv;
-
-var host = argv._[0];
-var hostParts = host.split(":");
-var upstream;
-if (hostParts.length === 1) {
-    upstream = {
-        hostname: host,
-        port: 80
-    }
-} else {
-    upstream = {
-        hostname: hostParts[0],
-        port: hostParts[1]
-    };
-}
-
-var port = parseInt(argv.port, 10);
-var interval = parseInt(argv.interval, 10);
-
-
-apiProxy.createServer({
-    interval: interval,
-    upstream: upstream
-}).listen(port);
+apiProxy.app.run(process.argv);
