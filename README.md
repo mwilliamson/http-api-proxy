@@ -19,6 +19,9 @@ This starts an HTTP server on port `<port>`.
 All requests to that server are delegated to `<hostname>:<port>`,
 but ensuring that at least `<interval>` millseconds elapse between each request.
 
+If `<cache-age>` is set,
+successful GET requests will be cached for `<cache-age>` milliseconds.
+
 Alternatively, you can use a configuration file.
 This allows the proxy to be used for multiple upstreams.
 
