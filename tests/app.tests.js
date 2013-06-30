@@ -74,7 +74,9 @@ function startApiProxy(options) {
             callback = options;
             options = {}
         }
-        request(url(path), options, function(error, response, body) {
+        options.headers = {host: "localhost:" + echoPort};
+        options.url = url(path);
+        request(options, function(error, response, body) {
             var jsonBody = JSON.parse(body);
             callback(error, jsonBody.time, jsonBody.url);
         });
