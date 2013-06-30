@@ -13,7 +13,7 @@ Any requests to an upstream host that the proxy has not been configured for will
 
 To start a proxy:
 
-    http-api-proxy <hostname>[:<port>] --interval=<interval> --port=<port> [--cache=<cache-age>]
+    http-api-proxy <hostname>[:<port>] --interval=<interval> --port=<port> [--cache=<cache-age>] [--cache-path=<cache-path>]
 
 This starts an HTTP server on port `<port>`.
 All requests to that server are delegated to `<hostname>:<port>`,
@@ -21,11 +21,13 @@ but ensuring that at least `<interval>` millseconds elapse between each request.
 
 If `<cache-age>` is set,
 successful GET requests will be cached for `<cache-age>` milliseconds.
+If `<cache-path>` is set,
+the specified path will be used to persist the cache.
 
 Alternatively, you can use a configuration file.
 This allows the proxy to be used for multiple upstreams.
 
-    http-api-proxy -c <config-file.json> --port=<port> [--cache=<cache-age>]
+    http-api-proxy -c <config-file.json> --port=<port> [--cache=<cache-age>] [--cache-path=<cache-path>]
     
 ## Examples
 
