@@ -10,7 +10,7 @@ exports["requests are rate limited"] = function(test) {
         test.ifError(error);
         server.timeRequest("/", function(error, secondTime) {
             test.ifError(error);
-            test.ok(secondTime - firstTime >= 100, "gap was: " + (secondTime - firstTime));
+            test.ok(secondTime - firstTime >= 98, "gap was: " + (secondTime - firstTime));
             server.stop();
             test.done();     
         });
@@ -40,7 +40,7 @@ exports["different URLs are separately cached"] = function(test) {
         server.timeRequest("/second", function(error, secondTime, url) {
             test.ifError(error);
             test.equal(url, "/second");
-            test.ok(secondTime - firstTime >= 100, "gap was: " + (secondTime - firstTime));
+            test.ok(secondTime - firstTime >= 98, "gap was: " + (secondTime - firstTime));
             server.stop();
             test.done();     
         });
