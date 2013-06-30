@@ -1,10 +1,27 @@
+var fs = require("fs");
+
 var request = require("request");
+var temp = require("temp");
 
 var apiProxy = require("../");
 var httpEcho = require("./http-echo");
 
 exports["requests are rate limited"] = function(test) {
     var server = startApiProxy();
+    
+    server.timeRequest("/", function(error, firstTime) {
+        test.ifError(error);
+        server.timeRequest("/", function(error, secondTime) {
+            test.ifError(error);
+            test.ok(secondTime - firstTime >= 98, "gap was: " + (secondTime - firstTime));
+            server.stop();
+            test.done();     
+        });
+    });
+};
+
+exports["can configure server through file"] = function(test) {
+    var server = startApiProxy({useConfigFile: true});
     
     server.timeRequest("/", function(error, firstTime) {
         test.ifError(error);
@@ -49,15 +66,31 @@ exports["different URLs are separately cached"] = function(test) {
 
 function startApiProxy(options) {
     options = options || {};
+    
     var echoPort = 50999;
     var proxyPort = 50998;
+    
     var httpEchoServer = httpEcho.createServer().listen(echoPort);
     
-    var argv = [
-        "localhost:" + echoPort,
-        "--interval=100",
-        "--port=" + proxyPort
-    ];
+    var argv = ["--port=" + proxyPort];
+    
+    if (options.useConfigFile) {
+        var tempFile = temp.openSync("config.json");
+        fs.writeFileSync(tempFile.path, JSON.stringify({
+            sites: [
+                {
+                    upstream: "http://localhost:" + echoPort,
+                    interval: 100
+                }
+            ]
+        }), "utf8");
+        
+        argv.push("-c");
+        argv.push(tempFile.path);
+    } else {
+        argv.push("localhost:" + echoPort);
+        argv.push("--interval=100");
+    }
     if (options.cacheAge) {
         argv.push("--cache=" + options.cacheAge);
     }
