@@ -29,7 +29,7 @@ exports["can configure server through file"] = function(test) {
             test.ifError(error);
             test.ok(secondTime - firstTime >= 98, "gap was: " + (secondTime - firstTime));
             server.stop();
-            test.done();     
+            test.done();
         });
     });
 };
@@ -72,27 +72,29 @@ function startApiProxy(options) {
     
     var httpEchoServer = httpEcho.createServer().listen(echoPort);
     
-    var argv = ["--port=" + proxyPort];
-    
     if (options.useConfigFile) {
         var tempFile = temp.openSync("config.json");
-        fs.writeFileSync(tempFile.path, JSON.stringify({
+        var config = {
             sites: [
                 {
                     upstream: "http://localhost:" + echoPort,
                     interval: 100
                 }
-            ]
-        }), "utf8");
+            ],
+            port: proxyPort
+        };
+        fs.writeFileSync(tempFile.path, JSON.stringify(config), "utf8");
         
-        argv.push("-c");
-        argv.push(tempFile.path);
+        var argv = ["-c", tempFile.path];
     } else {
-        argv.push("localhost:" + echoPort);
-        argv.push("--interval=100");
-    }
-    if (options.cacheAge) {
-        argv.push("--cache=" + options.cacheAge);
+        var argv = [
+            "--port=" + proxyPort,
+            "localhost:" + echoPort,
+            "--interval=100"
+        ];
+        if (options.cacheAge) {
+            argv.push("--cache=" + options.cacheAge);
+        }
     }
     
     var apiProxyServer = apiProxy.app.run(argv);

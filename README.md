@@ -27,8 +27,12 @@ the specified path will be used to persist the cache.
 Alternatively, you can use a configuration file.
 This allows the proxy to be used for multiple upstreams.
 
-    http-api-proxy -c <config-file.json> --port=<port> [--cache=<cache-age>] [--cache-path=<cache-path>]
-    
+    http-api-proxy -c <config-file.json>
+
+Note that if a configuration file is used,
+other command line arguments are ignored.
+Cache age and path can be set using the `cacheAge` and `cachePath` properties in the configuration file.
+
 ## Examples
 
 Suppose you want to access a particular API at most once per second:
@@ -47,5 +51,6 @@ where config.json looks like:
                 "upstream": "example.com",
                 "interval": 1000
             }
-        ]
+        ],
+        "port": 8080
     }
