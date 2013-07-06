@@ -20,20 +20,6 @@ exports["requests are rate limited"] = function(test) {
     });
 };
 
-exports["can configure server through file"] = function(test) {
-    var server = startApiProxy({useConfigFile: true});
-    
-    server.timeRequest("/", function(error, firstTime) {
-        test.ifError(error);
-        server.timeRequest("/", function(error, secondTime) {
-            test.ifError(error);
-            test.ok(secondTime - firstTime >= 98, "gap was: " + (secondTime - firstTime));
-            server.stop();
-            test.done();
-        });
-    });
-};
-
 exports["cached requests are not rate limited"] = function(test) {
     var server = startApiProxy({cacheAge: "1000000"});
     
@@ -72,30 +58,22 @@ function startApiProxy(options) {
     
     var httpEchoServer = httpEcho.createServer().listen(echoPort);
     
-    if (options.useConfigFile) {
-        var tempFile = temp.openSync("config.json");
-        var config = {
-            sites: [
-                {
-                    upstream: "http://localhost:" + echoPort,
-                    interval: 100
-                }
-            ],
-            port: proxyPort
-        };
-        fs.writeFileSync(tempFile.path, JSON.stringify(config), "utf8");
-        
-        var argv = ["-c", tempFile.path];
-    } else {
-        var argv = [
-            "--port=" + proxyPort,
-            "localhost:" + echoPort,
-            "--interval=100"
-        ];
-        if (options.cacheAge) {
-            argv.push("--cache=" + options.cacheAge);
-        }
+    var tempFile = temp.openSync("config.json");
+    var config = {
+        sites: [
+            {
+                upstream: "http://localhost:" + echoPort,
+                interval: 100
+            }
+        ],
+        port: proxyPort
+    };
+    if (options.cacheAge) {
+        config["cacheAge"] = options.cacheAge;
     }
+    fs.writeFileSync(tempFile.path, JSON.stringify(config), "utf8");
+    
+    var argv = ["-c", tempFile.path];
     
     var apiProxyServer = apiProxy.app.run(argv);
     
