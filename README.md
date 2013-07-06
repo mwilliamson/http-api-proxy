@@ -13,35 +13,25 @@ Any requests to an upstream host that the proxy has not been configured for will
 
 To start a proxy:
 
-    http-api-proxy <hostname>[:<port>] --interval=<interval> --port=<port> [--cache=<cache-age>] [--cache-path=<cache-path>]
-
-This starts an HTTP server on port `<port>`.
-All requests to that server are delegated to `<hostname>:<port>`,
-but ensuring that at least `<interval>` millseconds elapse between each request.
-
-If `<cache-age>` is set,
-successful GET requests will be cached for `<cache-age>` milliseconds.
-If `<cache-path>` is set,
-the specified path will be used to persist the cache.
-
-Alternatively, you can use a configuration file.
-This allows the proxy to be used for multiple upstreams.
-
     http-api-proxy -c <config-file.json>
 
-Note that if a configuration file is used,
-other command line arguments are ignored.
-Cache age and path can be set using the `cacheAge` and `cachePath` properties in the configuration file.
+The config file should be a JSON file with the following properties:
+
+* `port`: The port on which the HTTP proxy server should listen
+* `sites`: A list of sites that the proxy can delegate requests to.
+  If a request is made for a site that is not referenced here,
+  the proxy will respond with a 500 error.
+  Each element should have the following properties:
+  * `upstream`: The host for the upstream site, such as `example.com` or `example.com:8080`.
+  * `interval`: Ensure that at least `interval` milliseconds elapse between each request to this site.
+* `cacheAge` (optional): If set, successful GET requests will be cached for `cacheAge` milliseconds.
+* `cachePath` (optional): If set, the specified path will be used to persist the cache.
 
 ## Examples
 
 Suppose you want to access a particular API at most once per second:
 
-    http-api-proxy example.com --interval=1000 --port=8080
-
-Or using a configuration file:
-
-    http-api-proxy -c config.json --port=8080
+    http-api-proxy -c config.json
 
 where config.json looks like:
 
