@@ -38,7 +38,7 @@ where config.json looks like:
     {
         "sites": [
             {
-                "upstream": "example.com",
+                "upstream": "http://example.com",
                 "interval": 1000
             }
         ],
