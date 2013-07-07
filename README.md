@@ -22,7 +22,7 @@ The config file should be a JSON file with the following properties:
   If a request is made for a site that is not referenced here,
   the proxy will respond with a 500 error.
   Each element should have the following properties:
-  * `upstream`: The host for the upstream site, such as `example.com` or `example.com:8080`.
+  * `upstream`: The host for the upstream site, such as `http://example.com` or `http://example.com:8080`.
   * `interval`: Ensure that at least `interval` milliseconds elapse between each request to this site.
 * `cacheAge` (optional): If set, successful GET requests will be cached for `cacheAge` milliseconds.
 * `cachePath` (optional): If set, the specified path will be used to persist the cache.
