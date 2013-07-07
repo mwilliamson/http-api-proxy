@@ -7,7 +7,8 @@
     "rate-limit": "~0.1.0",
     "connect-response-cache": "~0.1.4",
     "optimist": "~0.5.2",
-    "xdg": "~0.1.0"
+    "xdg": "~0.1.0",
+    "mkdirp": "~0.3.5"
   },
   "devDependencies": {
     "nodeunit": "~0.8.0",

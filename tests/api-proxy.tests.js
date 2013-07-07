@@ -4,9 +4,7 @@ var apiProxy = require("../");
 
 
 exports["500 error if site in request has not been configured"] = function(test) {
-    var proxyServer = apiProxy.createServer([]);
-    
-    proxyServer.listen(50998);
+    var proxyServer = apiProxy.startServer([], {httpPort: 50998});
     
     var requestOptions = {
         url: "http://localhost:50998/",

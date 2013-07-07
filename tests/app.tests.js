@@ -21,7 +21,7 @@ exports["requests are rate limited"] = function(test) {
 };
 
 exports["cached requests are not rate limited"] = function(test) {
-    var server = startApiProxy({cacheAge: "1000000"});
+    var server = startApiProxy({cacheAge: 1000000});
     
     server.timeRequest("/", function(error, firstTime) {
         test.ifError(error);
@@ -35,7 +35,7 @@ exports["cached requests are not rate limited"] = function(test) {
 };
 
 exports["different URLs are separately cached"] = function(test) {
-    var server = startApiProxy({cacheAge: "1000000"});
+    var server = startApiProxy({cacheAge: 1000000});
     
     server.timeRequest("/first", function(error, firstTime, url) {
         test.ifError(error);
@@ -66,7 +66,7 @@ function startApiProxy(options) {
                 interval: 100
             }
         ],
-        port: proxyPort
+        httpPort: proxyPort
     };
     if (options.cacheAge) {
         config["cacheAge"] = options.cacheAge;
