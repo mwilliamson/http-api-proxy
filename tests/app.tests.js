@@ -59,6 +59,7 @@ function startApiProxy(options) {
     var httpEchoServer = httpEcho.createServer().listen(echoPort);
     
     var tempFile = temp.openSync("config.json");
+    var cachePath = temp.mkdirSync();
     var config = {
         sites: [
             {
@@ -66,7 +67,8 @@ function startApiProxy(options) {
                 interval: 100
             }
         ],
-        httpPort: proxyPort
+        httpPort: proxyPort,
+        cachePath: cachePath
     };
     if (options.cacheAge) {
         config["cacheAge"] = options.cacheAge;
