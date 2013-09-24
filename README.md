@@ -9,7 +9,7 @@ A reverse proxy designed for use with rate limited APIs.
 ## Usage
 
 Any requests to the proxy must have the `Host` header set to the upstream host.
-Any requests to an upstream host that the proxy has not been configured for will return errors.
+Any requests to an upstream host that the proxy has not been configured for will return errors unless a default interval is set.
 
 To start a proxy:
 
@@ -33,6 +33,7 @@ The config file should be a JSON file with the following properties:
   * `interval`: Ensure that at least `interval` milliseconds elapse between each request to this site.
 * `cacheAge` (optional): If set, successful GET requests will be cached for `cacheAge` milliseconds.
 * `cachePath` (optional): If set, the specified path will be used to persist the cache.
+* `defaultInterval` (optional): If set, any requests to an upstream host that have not been explicitly configured will use this value for `interval`.
 
 ## Examples
 
