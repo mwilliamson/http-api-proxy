@@ -50,6 +50,38 @@ exports["different URLs are separately cached"] = function(test) {
     });
 };
 
+exports["different URLs are separately cached"] = function(test) {
+    var server = startApiProxy({cacheAge: 1000000});
+    
+    server.timeRequest("/first", function(error, firstTime, url) {
+        test.ifError(error);
+        test.equal(url, "/first");
+        server.timeRequest("/second", function(error, secondTime, url) {
+            test.ifError(error);
+            test.equal(url, "/second");
+            test.ok(secondTime - firstTime >= 98, "gap was: " + (secondTime - firstTime));
+            server.stop();
+            test.done();     
+        });
+    });
+};
+
+exports["full URL is not passed to upstream when full URL is specified in proxy request"] = function(test) {
+    var server = startApiProxy({cacheAge: 1000000});
+    
+    server.timeRequest("/first", {proxy: true}, function(error, firstTime, url) {
+        test.ifError(error);
+        test.equal(url, "/first");
+        server.timeRequest("/second", function(error, secondTime, url) {
+            test.ifError(error);
+            test.equal(url, "/second");
+            test.ok(secondTime - firstTime >= 98, "gap was: " + (secondTime - firstTime));
+            server.stop();
+            test.done();     
+        });
+    });
+};
+
 function startApiProxy(options) {
     options = options || {};
     
@@ -90,7 +122,13 @@ function startApiProxy(options) {
             options = {}
         }
         options.headers = {host: "localhost:" + echoPort};
-        options.url = url(path);
+        
+        if (options.proxy) {
+            options.proxy = url("/");
+            options.url = "http://localhost:" + echoPort + path;
+        } else {
+            options.url = url(path);
+        }
         request(options, function(error, response, body) {
             var jsonBody = JSON.parse(body);
             callback(error, jsonBody.time, jsonBody.url);
