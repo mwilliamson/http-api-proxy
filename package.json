@@ -13,12 +13,14 @@
   "devDependencies": {
     "nodeunit": "~0.8.0",
     "request": "~2.21",
-    "temp": "~0.5.1"
+    "temp": "~0.5.1",
+    "eslint": "2.13.1"
   },
   "bin": {
     "http-api-proxy": "bin/http-api-proxy"
   },
   "scripts": {
+    "pretest": "eslint lib tests",
     "test": "nodeunit tests/*.tests.js"
   },
   "keywords": [

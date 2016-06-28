@@ -15,7 +15,7 @@ exports["requests are rate limited"] = function(test) {
             test.ifError(error);
             test.ok(secondTime - firstTime >= 98, "gap was: " + (secondTime - firstTime));
             server.stop();
-            test.done();     
+            test.done();
         });
     });
 };
@@ -29,7 +29,7 @@ exports["cached requests are not rate limited"] = function(test) {
             test.ifError(error);
             test.equal(firstTime, secondTime);
             server.stop();
-            test.done();     
+            test.done();
         });
     });
 };
@@ -45,7 +45,7 @@ exports["different URLs are separately cached"] = function(test) {
             test.equal(url, "/second");
             test.ok(secondTime - firstTime >= 98, "gap was: " + (secondTime - firstTime));
             server.stop();
-            test.done();     
+            test.done();
         });
     });
 };
@@ -61,7 +61,7 @@ exports["different URLs are separately cached"] = function(test) {
             test.equal(url, "/second");
             test.ok(secondTime - firstTime >= 98, "gap was: " + (secondTime - firstTime));
             server.stop();
-            test.done();     
+            test.done();
         });
     });
 };
@@ -77,7 +77,7 @@ exports["full URL is not passed to upstream when full URL is specified in proxy 
             test.equal(url, "/second");
             test.ok(secondTime - firstTime >= 98, "gap was: " + (secondTime - firstTime));
             server.stop();
-            test.done();     
+            test.done();
         });
     });
 };
@@ -119,7 +119,7 @@ function startApiProxy(options) {
     function timeRequest(path, options, callback) {
         if (!callback) {
             callback = options;
-            options = {}
+            options = {};
         }
         options.headers = {host: "localhost:" + echoPort};
         

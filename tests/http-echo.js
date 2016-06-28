@@ -8,7 +8,7 @@ exports.createServer = function() {
         response.write(JSON.stringify(describeRequest(request), null, 4));
         response.end("\n");
     });
-}
+};
 
 function describeRequest(request) {
     return {
